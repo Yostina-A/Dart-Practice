@@ -1,103 +1,33 @@
-class Person {
-  Person(this.name, this.age);
+// Practicing interface, abstraction & polymorphism
 
-  final String name;
-  final int age;
 
-  void walk(){
-    print("$name is walking");
-  }
+ abstract class Payment {
+  void pay(double amount, String name); //this sysntax is called abstract method
 
-  void work(String value){
-    print("$name is working on $value");
+  void printReciept(double amount){
+    print("You have paid the amount of $amount");
   }
 }
 
 
-class Engineer extends Person {
-  Engineer(super.name, super.age, this.job);
-
-  String job;
-
-  /*@override
-  void walk(){
-    super.walk();
-    print("$name has finished walking");
-  }*/
-  @override
-  void work(String value){
-    print("$name is developing $value");
-  }
-}
-
-class Doctor extends Person{
-  Doctor(super.name, super.age, this.hobby);
-
-  String hobby;
+class PayByWallet extends Payment {
 
   @override
-  void work(String value){
-    print("$name is a doctor and he is checking $value at the moment");
+  void pay(double amount, String name) {
+    print("$name paid $amount using Wallet.");
+    //we don't need the "super" keyword here to call the parent class's method since we didn't
+    //override it in the child class.
+    printReciept(amount);
   }
 }
 
 
-
-class Car {
-  Car(this.brand, this.model, this.type);
-
-  String brand;
-  int model;
-  String type;
-
-  void go(){
-    print("The $brand car is going");
-  }
-}
-
-class Hyundai extends Car{
-  Hyundai(super.brand, super.model, super.type, this.color);
-  
-  String color;
-  String? motorType;
-
-  void printMotorType(){
-    print("The $brand car model numer: $model has a motor type of $motorType");
-  }
-
-}
-
-enum moveType {
-  fly, walk, swim;
-
-  String get label {
-    switch(this){
-      case moveType.fly: return "Fly";
-      case moveType.walk: return "Walk";
-      case moveType.swim: return "Swim";
-    }
-  }
-}
-class Animal {
-  Animal(this.type, this.name, this.moveHow, this.sound);
-
-  String type;
-  String name;
-  moveType moveHow;
-  String sound;
-
-  void move(){
-    print("$name is moving");
-  } 
-}
-
-class Dog extends Animal{
-  Dog(super.type, super.name, super.moveHow, super.sound, this.breed);
-
-  String breed;
+class PayByCreditCard extends Payment {
 
   @override
-  void move(){
-    print("$name is a dog of breed $breed and it says '$sound'");
+  void pay(double amount, String name) {
+    print("$name paid $amount using credit card.");
+
+    printReciept(amount);
   }
 }
