@@ -1,34 +1,44 @@
-// Practicing interface, abstraction & polymorphism
+// Practicing OOP on Budget app
+// Budget app v1 with logic in constructor
 
+double income = 2600;
 
- abstract class Payment {
-
-  void pay(double amount, String name); //this sysntax is called abstract method
-
-  void printReciept(double amount){
-    print("You have paid the amount of \$$amount"); // ading "\$ before $amount prints "$"
+ class Category {
+  // I added logic in the constructor (it acts like a fucnction) to check that user is providing either a percentage or an amount.
+  Category(this.name, {this.amount, this.percentage}){
+    if(amount == null && percentage == null){
+      print("You must provide either an amount or a percentage. Not both or none.");
+    } else if(amount != null){
+      amount = amount;
+    }else if(percentage != null){
+      percentage = percentage;
+    }else {
+      print("You can't provide both amount and percentage!");
+    }
   }
-}
 
+  String name;
+  double? amount;
+  double? percentage;
+  double balance = 0;
+  String currency = "EGP";
 
-class PayByWallet extends Payment {
-
-  @override
-  void pay(double amount, String name) {
-    print("$name paid \$$amount using Wallet.");
-    //we don't need the "super" keyword here to call the parent class's method since we didn't
-    //override it in the child class.
-    printReciept(amount);
+  void addPercentage(){
+    if(percentage != null && percentage != 0.0){ // adding "!" after a nullable variable tells dart that it won't be null here.
+      balance = balance + (percentage! * income);
+      print("Blance: $currency $balance");
+    }
   }
-}
 
-
-class PayByCreditCard extends Payment {
-
-  @override
-  void pay(double amount, String name) {
-    print("$name paid \$$amount using credit card.");
-
-    printReciept(amount);
+  void addAmount(double amount){
+     balance += amount;
+    print("Blance: $currency $balance");
   }
-}
+  
+  void subtract(double expense){
+    if(expense <= balance){
+      balance -= expense;
+      print("Balance: $currency $balance");
+    }
+  }
+ }

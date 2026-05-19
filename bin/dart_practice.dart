@@ -1,10 +1,11 @@
+// Budget App V1
+
 import 'oop_practice.dart';
 
 void main(){
-  Payment pay = PayByWallet();
-  pay.pay(1000, "Tina");
+  var groceries = Category("Groceries", percentage: 0.50);
 
-  // assigning a new child class object to the "pay" var is called polymorphism
-  pay = PayByCreditCard(); 
-  pay.pay(500, "Rose");
+  groceries.addPercentage();
+  groceries.addAmount(500);
+  groceries.subtract(260);
 }
