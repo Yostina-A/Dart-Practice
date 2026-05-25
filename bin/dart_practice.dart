@@ -1,7 +1,7 @@
-// Budget App V1
+
 
 
 void main(){
-
-
+  int num = 5;
+  print("$num%");
 }
