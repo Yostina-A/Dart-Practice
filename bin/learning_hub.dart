@@ -30,8 +30,29 @@ class User {
   static int userCount = 0;
 
   String name;
-  List enroledCourses = [];
-  List finLessons = [];
+  List<Course> enroledCourses = [];
+  int finLessons = 0;
+
+  void enrolCourse(String name, describ, CourseDif dif){
+    enroledCourses.add(Course(name, describ, dif));
+  }
+
+  Object? studyLesson(Course course){
+    if (course.isFinished()){return "Course is finished.";}
+    for (var lesson in course.lessons.entries){ // you must use ".entries" in a map so that the loop checks each key value pair
+      if (lesson.value == true){
+          continue;
+      }
+      course.finCourseLessons ++;
+      finLessons ++;
+      return lesson.key;
+  } return null;
+  }
+
+  void generateReport(){
+    Report report = Report();
+    report.createReport(this);
+  }
 
 }
 
@@ -102,27 +123,41 @@ class Course {
   String name;
   String describ;
   CourseDif dif;
+  Map<String, bool> lessons = {};
+  int finCourseLessons = 0;
+
+
+  void addLesson(String name, {bool notDone = false}){
+    lessons[name] = notDone;
+  }
 
   
 
   double compPercent(){
-    double percent= 0.10; // figure out how to compute the completetion percentage
-    return percent;
+    return (finCourseLessons/lessons.length) * 100 ;
   }
 
     String? milStoneNotify(){
       double progress = compPercent();
-      if(progress == 1){
+      if(progress == 100){
         return "you have finished this course";
-      }else if (progress == 0.75){
+      }else if (progress == 75){
           return "You have finished 75% of the course.";
-      } else if (progress == 0.50){
+      } else if (progress == 50){
           return "You have finished 50% of the course";
-      } else if (progress == 0.25){
-          return "You have finsihded 25% of the coutrse";
+      } else if (progress == 25){
+          return "You have finsihed 25% of the coutrse";
       } else {
          return null;
       }
+    }
+
+
+    bool isFinished(){
+      for (var lesson in lessons.entries){
+        if(lesson.value == false){return false;}
+      }
+      return true;
     }
 }
 
@@ -130,14 +165,21 @@ class Course {
 //-------------------------------------------------------------------------------------------------
 // report class
 
-// need a list of course in users
-// need a list of finished lessons in user
+// needs a list of course in users
+// needs a list of finished lessons in user
 class Report {
-  int enCourseCount = 0;
-  int finLessonsCount = 0;
-  int finCourseCount = 0;
 
-  void createReport(){
-    print("Total number of enrolled courses: $enCourseCount \n Number of finished courses: $finCourseCount \n Number of finished lessons: $finLessonsCount");
+  void createReport(User user){
+    int enCourseCount = user.enroledCourses.length;
+    int finLessonsCount = user.finLessons;
+    int finCourseCount = 0;
+
+    for (var course in user.enroledCourses){
+      if (course.isFinished()) {finCourseCount ++;}
+    }
+    print(
+      "Total number of enrolled courses: $enCourseCount \n" 
+      "Number of finished courses: $finCourseCount \n"
+      "Number of finished lessons: $finLessonsCount");
   }
 }
