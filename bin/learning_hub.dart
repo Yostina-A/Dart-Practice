@@ -32,6 +32,7 @@ class User {
 
   String name;
   List<Course> enroledCourses = [];
+  List totalFinishedLessons = [];
   int finLessons = 0;
 
   void enrolCourse(String name, describ, CourseDif dif){
@@ -46,7 +47,8 @@ class User {
       }
       course.lessons[lesson.key] = true;
       course.countFinishedLessons();
-      finLessons ++;
+      totalFinishedLessons.add(lesson);
+      finLessons = totalFinishedLessons.length; 
       return lesson.key; // figure out a way to to return first before the previous logic.
   } return null;
   }
@@ -123,14 +125,18 @@ class Course {
   int finCourseLessons = 0;
 
 
-  void addLesson(String name, {bool notDone = false}){
-    lessons[name] = notDone;
+  void addLesson(String name, {bool done = false}){
+    lessons[name] = done;
   }
 
   void countFinishedLessons(){
+    List finishedLessons = [];
     for (var lesson in lessons.entries){
-      if(lesson.value == true){finCourseLessons ++;}
+      // creating a sublist of finished lessons is to avoid double counting when the finCourseLessons counter doesn't reset 
+      //in the previous version
+      if(lesson.value == true){finishedLessons.add(lesson);} 
     }
+    finCourseLessons = finishedLessons.length;
   }
 
   double compPercent(){
@@ -180,6 +186,13 @@ class Report {
     print(
       "Total number of enrolled courses: $enCourseCount \n" 
       "Number of finished courses: $finCourseCount \n"
-      "Total number of finished lessons: $finLessonsCount");
+      "Total number of finished lessons: $finLessonsCount \n");
+
+    // to print the progress percentage of each course
+    for (var course in user.enroledCourses){
+      print("${course.name}: ${course.compPercent()}% complete.");
+    }
   }
+
+  
 }
