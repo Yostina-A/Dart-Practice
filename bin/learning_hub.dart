@@ -1,7 +1,8 @@
 // Mixins
 
-/* mixin LogInLogOut{
-
+mixin LoginLogout{
+  String get email;
+  String get pwd;
 
   void login(String email, String pwd){
     if(this.email == email && this.pwd == pwd){
@@ -14,7 +15,7 @@
   void logout(){
     print("You have logged out.");
   }
-} */
+} 
 
 
 //-------------------------------------------------------------------------------------------------------
@@ -37,15 +38,16 @@ class User {
     enroledCourses.add(Course(name, describ, dif));
   }
 
-  Object? studyLesson(Course course){
+  String? studyLesson(Course course){
     if (course.isFinished()){return "Course is finished.";}
     for (var lesson in course.lessons.entries){ // you must use ".entries" in a map so that the loop checks each key value pair
       if (lesson.value == true){
           continue;
       }
-      course.finCourseLessons ++;
+      course.lessons[lesson.key] = true;
+      course.countFinishedLessons();
       finLessons ++;
-      return lesson.key;
+      return lesson.key; // figure out a way to to return first before the previous logic.
   } return null;
   }
 
@@ -57,26 +59,23 @@ class User {
 }
 
 
-class RegularUser extends User{
+class RegularUser extends User with LoginLogout{
 
   RegularUser(super.name, this.email, this.pwd);
 
+  @override
   String email;
+  @override
   String pwd;
 
-
-
-void login(String email, String pwd){
-    if(this.email == email && this.pwd == pwd){
-      print("You have logged in successfuly");
-    } else {
-      print("Invalid credentials!");
-    }
+  void logIn(String email, String pwd){
+    login(email, pwd);
   }
 
-  void logout(){
-    print("You have logged out.");
+  void logOut(){
+    logout();
   }
+
 }
 
 class GuestUser extends User {
@@ -85,26 +84,23 @@ class GuestUser extends User {
 
 }
 
-class AdminUser extends User{
+class AdminUser extends User with LoginLogout{
 
   AdminUser(super.name, this.email, this.pwd);
 
+  @override
   String email;
+  @override
   String pwd;
 
-
-
-  void login(String email, String pwd){
-    if(this.email == email && this.pwd == pwd){
-      print("You have logged in successfuly");
-    } else {
-      print("Invalid credentials!");
-    }
+  void logIn(String email, String pwd){
+    login(email, pwd);
   }
 
-  void logout(){
-    print("You have logged out.");
+  void logOut(){
+    logout();
   }
+
 }
 
 // -----------------------------------------------------------------------------------------------------------------
@@ -131,7 +127,11 @@ class Course {
     lessons[name] = notDone;
   }
 
-  
+  void countFinishedLessons(){
+    for (var lesson in lessons.entries){
+      if(lesson.value == true){finCourseLessons ++;}
+    }
+  }
 
   double compPercent(){
     return (finCourseLessons/lessons.length) * 100 ;
@@ -141,12 +141,12 @@ class Course {
       double progress = compPercent();
       if(progress == 100){
         return "you have finished this course";
-      }else if (progress == 75){
+      }else if (progress >= 75 && progress < 100){
           return "You have finished 75% of the course.";
-      } else if (progress == 50){
+      } else if (progress >= 50 && progress < 75 ){
           return "You have finished 50% of the course";
-      } else if (progress == 25){
-          return "You have finsihed 25% of the coutrse";
+      } else if (progress >= 25 && progress < 50){
+          return "You have finsihed 25% of the course";
       } else {
          return null;
       }
@@ -180,6 +180,6 @@ class Report {
     print(
       "Total number of enrolled courses: $enCourseCount \n" 
       "Number of finished courses: $finCourseCount \n"
-      "Number of finished lessons: $finLessonsCount");
+      "Total number of finished lessons: $finLessonsCount");
   }
 }
